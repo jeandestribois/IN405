@@ -1,0 +1,19 @@
+cat : Concaténer des fichiers et les afficher sur la sortie standard
+cd : Permet de se déplacer dans l'arborescence
+cp : Copier des fichiers et des répertoires
+diff : Comparer des fichiers ligne à ligne
+echo : Afficher une ligne de texte
+gcc : Appel le compilateur GNU
+gdb : Lance le Debuggeur de GNU
+ls : Afficher le contenu de répertoires
+make : Permet de mettre à jour un programme muni dans fichier Makefile
+man : Interface de consultation des manuels de référence en ligne
+mkdir : Créer des répertoires
+mv : Déplacer ou renommer des fichiers
+rm : Effacer des fichiers et des répertoires
+rmdir : Supprimer des répertoires vides
+sudo : Executer une commande en tant que Superuser ou un autre user
+tar : Version GNU de l'utilitaire de gestion d'archives tar
+time : Donne le temps en secondes
+touch : Modifier l'horodatage d'un fichier (utile pour creer un fichier vide)
+vi : Ouvre l'éditeur vim

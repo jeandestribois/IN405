@@ -1,6 +1,8 @@
 #ifndef H_SE_FICHIER
 #define H_SE_FICHIER
 
+#include <unistd.h>
+
 // La structure FICHIER contient les champs suivants :
 // - le descripteur de fichier (entier)
 // - le nom/chemin du fichier (chaîne de caractères)
@@ -37,7 +39,7 @@ int SE_suppression (
 // \param	caractere		Pointeur du caractère lu
 // \return					-1 si échec, 0 si fin du fichier,
 //							nombres d'octets lus sinon
-int SE_lectureCaractere (
+ssize_t SE_lectureCaractere (
 	SE_FICHIER fichier,
 	char * caractere);
 
@@ -45,7 +47,7 @@ int SE_lectureCaractere (
 // \param	fichier			Structure FICHIER où écrire
 // \param	caractere		Caractère à écrire
 // \return					-1 si échec, nombre d'octets écrits sinon
-int SE_ecritureCaractere (
+ssize_t SE_ecritureCaractere (
 	SE_FICHIER fichier,
 	const char caractere);
 
