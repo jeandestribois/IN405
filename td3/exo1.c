@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
 	struct stat sb;
 	if(argc != 2)
 	{
-		fprintf(stderr,"le nombre d'argument saisi est incorrecte");
+		fprintf(stderr,"le nombre d'argument saisi est incorrecte\n");
 		exit(EXIT_FAILURE);
 	}
 	if(stat(argv[1], &sb) == -1)
 	{
-		fprintf(stderr,"la lecture des elements du fichier a échoué");
+		fprintf(stderr,"la lecture des elements du fichier a échoué\n");
 		exit(EXIT_FAILURE);
 	}
 	printf("File type:                ");
