@@ -8,13 +8,10 @@ int main(int argc, char** argv){
 	
 	srand(time(NULL));
 	int fils = 0;
-	pid_t cpid;
-	for(int i=0; i<10; i++) {
+	pid_t cpid=1;
+	for(int i=0; i<10 && cpid!=0; i++) {
 		cpid = fork();
-		if(!cpid) {
-			fils = 1;
-			break;
-		}
+		if(!cpid) fils = 1;
 	}
 	if(fils){
 		int waitingTime = 1+rand()%10;
