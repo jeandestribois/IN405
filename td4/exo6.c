@@ -5,27 +5,36 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+int compteur;
 
-
-int signal()
+void mon_signal(int signal)
 {
-
+	printf("debug: %d\n",compteur);
 }
 
 int main(int argc, char const *argv[])
 {
-	pid_t fils;
-	sigaction(SIGUSER1,SA_ONSTACK)
-	if((fils=fork()))
+	struct sigaction sig;
+	sig.sa_handler=&mon_signal;
+	sig.sa_flags=SA_ONSTACK;
+	pid_t pid_fils;
+	sigaction(SIGUSR1,&sig,NULL);
+	pid_fils=fork();
+	if(pid_fils)
 	{
-
+		sleep(3);
+		kill(pid_fils,SIGUSR1);
+		sleep(2);
+		kill(pid_fils,SIGUSR1);
+		sleep(3);
+		kill(pid_fils,SIGUSR1);
 	}
 	else
 	{
 		printf("Fils : compte 12 secondes :\n");
-		for(int i=1; i<13; i++)
+		for(compteur=1; compteur<13; compteur++)
 		{
-			printf("%d..\n",i);
+			printf("%d..\n",compteur);
 			sleep(1);
 		}
 	}
