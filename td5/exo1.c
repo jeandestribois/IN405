@@ -12,8 +12,8 @@ void* routine_thread1()
 
 void* routine_thread2(void* args)
 {
-	int* alea=(int*)args;
-	printf("Entier aleatoire généré par le processus principal : %d\n",*alea);
+	int alea=(int)args;
+	printf("Entier aleatoire généré par le processus principal : %d\n",alea);
 	pthread_exit(NULL);
 }
 
@@ -44,6 +44,7 @@ void* routine_thread5(void* args)
 	pthread_exit(NULL);
 }
 
+
 int main(int argc, char const *argv[])
 {
 	if(argc!=2)
@@ -73,9 +74,9 @@ int main(int argc, char const *argv[])
 	}
 
 	pthread_create(&thread1,NULL,routine_thread1,NULL);
-	pthread_create(&thread2,NULL,routine_thread2,(void*)&alea1);
+	pthread_create(&thread2,NULL,routine_thread2,(void*)alea1);
 	pthread_create(&thread3,NULL,routine_thread3,(void*)&alea2);
-	pthread_create(&thread4,NULL,routine_thread4,(void*)&talea1);
+	pthread_create(&thread4,NULL,routine_thread4,(void*)talea1);
 	pthread_create(&thread5,NULL,routine_thread5,(void*)talea2);
 
 	pthread_join(thread1,NULL);
