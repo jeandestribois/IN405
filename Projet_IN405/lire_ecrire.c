@@ -39,7 +39,7 @@ void gere_erreur(int erreur)
 		}
 		case 6:
 		{
-			fprintf(stderr,"Erreur lors de la fermeuture du fichier\n");
+			fprintf(stderr,"Erreur lors de la fermeuture d'un fichier\n");
 			exit(0);	
 		}
 		case 7:
@@ -59,8 +59,7 @@ TABLE lire_fichier(const char *nom)
 
 	if(fd==-1)
 	{
-		erreur=1;
-		gere_erreur(erreur);
+		gere_erreur(1);
 	}
 
 	char c;
@@ -169,10 +168,9 @@ TABLE lire_fichier(const char *nom)
 	ret=close(fd);
 	if(ret==-1)
 	{
-		erreur=6;
 		free(t.joueurs);
 		free(t.decks);
-		gere_erreur(erreur);
+		gere_erreur(6);
 	}
 	return t;
 }
@@ -183,7 +181,7 @@ void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
 	int erreur;
 	ssize_t ret;
 	char nom[100];
-	char c=';';
+	char c;
 	for(int i=0; i<nbJoueurs; i++)
 	{
 		while(&infoJoueurs[i]!=NULL)
@@ -192,17 +190,29 @@ void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
 			fd=open(nom,O_CREAT|O_WRONLY|O_TRUNC);
 			if(fd==-1)
 			{
-				erreur=6;
-				gere_erreur(erreur);
+				gere_erreur(7);
 			}
+			c=';';
 			ret=write(fd,&infoJoueurs[i].infoTour.cartesJoueur,sizeof(char)*10);
 			ret=write(fd,&c,sizeof(char));
 			ret=write(fd,&infoJoueurs[i].infoTour.totalJoueur,sizeof(int));
+			ret=write(fd,&c,sizeof(char));
 			ret=write(fd,&infoJoueurs[i].infoTour.cartesBanque,sizeof(char)*10);
+			ret=write(fd,&c,sizeof(char));
 			ret=write(fd,&infoJoueurs[i].infoTour.totalBanque,sizeof(int));
+			ret=write(fd,&c,sizeof(char));
 			ret=write(fd,&infoJoueurs[i].infoTour.mise,sizeof(int));
+			ret=write(fd,&c,sizeof(char));
 			ret=write(fd,&infoJoueurs[i].infoTour.gain,sizeof(int));
+			ret=write(fd,&c,sizeof(char));
 			ret=write(fd,&infoJoueurs[i].infoTour.nbJetons,sizeof(int));
+			c='\n';
+			ret=write(fd,&c,sizeof(char));
+		}
+		ret=close(fd);
+		if(ret==-1)
+		{
+			gere_erreur(7);
 		}
 	}
 }
