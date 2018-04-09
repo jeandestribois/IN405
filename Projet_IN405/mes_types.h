@@ -16,19 +16,15 @@ typedef struct table			// Structure contenant les informations initiale pour une
 	int nbDecks;
 } TABLE;
 
-typedef struct infotour		// Structure contenant les informations d'un tour joué pour un joueur	
+struct infojoueurs		// Liste chaîné contenant les informations de toute la simulation
 {
-	char cartesJoueur[10];
+	char *cartesJoueur;
 	int totalJoueur;
-	char cartesBanque[10];
+	char *cartesBanque;
 	int totalBanque;
 	int mise;
 	int gain;
 	int nbJetons;
-} INFOTOUR;
-
-typedef struct infojoueurs		// Liste chaîné contenant les informations de toute la simulation
-{
-	INFOTOUR infoTour;
 	struct infojoueurs *suiv;
-} INFOJOUEURS;
+};
+typedef struct infojoueurs* INFOJOUEURS;

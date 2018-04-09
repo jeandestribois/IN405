@@ -96,7 +96,7 @@ TABLE lire_fichier(const char *nom)
 	}
 
 	if(ret==0) erreur=3;		// Si on arrive au bout du fichier
-	if(ret<0) erreur=4;			// Si la fonction read a rencontré un problème
+	if(ret==-1) erreur=4;			// Si la fonction read a rencontré un problème
 	if(erreur!=0) gere_erreur(erreur);
 
 	printf("Nombre de joueurs : %d\n",t.nbJoueurs);
@@ -178,36 +178,36 @@ TABLE lire_fichier(const char *nom)
 void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
 {
 	int fd;
-	int erreur;
 	ssize_t ret;
 	char nom[100];
 	char c;
 	for(int i=0; i<nbJoueurs; i++)
 	{
-		while(&infoJoueurs[i]!=NULL)
+		while(infoJoueurs[i]!=NULL && ret!=-1)
 		{
 			sprintf(nom,"joueur_n%d.blackjack",i+1);
-			fd=open(nom,O_CREAT|O_WRONLY|O_TRUNC);
+			fd=open(nom,O_CREAT|O_WRONLY,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 			if(fd==-1)
 			{
 				gere_erreur(7);
 			}
 			c=';';
-			ret=write(fd,&infoJoueurs[i].infoTour.cartesJoueur,sizeof(char)*10);
+			ret=write(fd,&infoJoueurs[i]->cartesJoueur,sizeof(char*));
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i].infoTour.totalJoueur,sizeof(int));
+			ret=write(fd,&infoJoueurs[i]->totalJoueur,sizeof(int));
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i].infoTour.cartesBanque,sizeof(char)*10);
+			ret=write(fd,&infoJoueurs[i]->cartesBanque,sizeof(char*));
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i].infoTour.totalBanque,sizeof(int));
+			ret=write(fd,&infoJoueurs[i]->totalBanque,sizeof(int));
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i].infoTour.mise,sizeof(int));
+			ret=write(fd,&infoJoueurs[i]->mise,sizeof(int));
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i].infoTour.gain,sizeof(int));
+			ret=write(fd,&infoJoueurs[i]->gain,sizeof(int));
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i].infoTour.nbJetons,sizeof(int));
+			ret=write(fd,&infoJoueurs[i]->nbJetons,sizeof(int));
 			c='\n';
 			ret=write(fd,&c,sizeof(char));
+			infoJoueurs[i]=infoJoueurs[i]->suiv;
 		}
 		ret=close(fd);
 		if(ret==-1)
