@@ -66,7 +66,6 @@ void * moyenneTableau (void * arg)
 {
 	message_t *mes=(message_t*)arg;
 	mes->resultat=0;
-	int compteur=0;
 	for(int i=mes->debut; i<mes->fin; i++)
 	{
 		mes->resultat+=mes->t[i];
@@ -256,7 +255,13 @@ ptrVerif decodeOpcodeVerif (const opcode_t o) {
 // Génération du tableau avec des entiers compris entre 1 et 100.
 // \param	tailleTableau	Taille du tableau d'entiers
 // \return					Tableau d'entiers
-int * genereTableau (int tailleTableau) {  }
+int * genereTableau (int tailleTableau)
+{
+	for(int i=0; i<arg.tailleTableau; i++)
+	{
+		tab[i]=1+rand()%101;
+	}
+}
 
 // Fonction chargée de la réduction multi-threadé, elle va initialiser les
 // différentes variables utilisées par les threads (tableau d'entier, messages,
@@ -267,30 +272,38 @@ void programmePrincipal (const arg_t arg) {
 	// Déclaration des variables
 	int * tab, res;
 	pthread_t *thread;
-	message *mes;
+	message_t *mes;
 
 	// Allocation de la mémoire
-	tab=malloc(sizeof(int)*arg.tailleTableau);
+	tab=genereTableau(arg.tailleTableau);
 	thread=malloc(sizeof(pthread_t)*arg.nbThreads);
-	mes=malloc(sizeof(message)*arg.nbThreads);
+	mes=malloc(sizeof(message_t)*arg.nbThreads);
 
 	// Initialisation des variables et création des threads
 	for(int i=0; i<arg.tailleTableau; i++)
 	{
-		tab[i]=1+rand()%101%;
+		tab[i]=1+rand()%101;
 	}
-	mes[0].t=t;
+	mes[0].t=tab;
 	mes[0].debut=0;
 	mes[0].fin=arg.tailleTableau/arg.nbThreads;
-	for(int i=1; i<arg.tailleTableau-1; i++)
+	for(int i=1; i<arg.nbThreads-1; i++)
 	{
-		mes[i].t=t;
-		mes[i].debut=mes[i-1].fin+1;
-		mes[i].fin=mes[i].debut+(1+taille/nbre_thread);
+		mes[i].t=tab;
+		mes[i].debut=mes[i-1].fin;
+		mes[i].fin=mes[i].debut+(arg.tailleTableau/arg.nbThreads);
 	}
-	mes[nbre_thread-1].t=t;
-	mes[nbre_thread-1].debut=mes[nbre_thread-2].fin+1;
-	mes[nbre_thread-1].fin=taille-1;
+	mes[arg.nbThreads-1].t=tab;
+	mes[arg.nbThreads-1].debut=mes[arg.nbThreads-2].fin;
+	mes[arg.nbThreads-1].fin=arg.tailleTableau-1;
+
+	switch(arg.code)
+	{
+		case OCD_SOMME: for(int i=0; i<arg.nbThreads; i++) pthread_create(&thread[i],NULL,sommeTableau,(void*)mes[i]);
+		case OCD_MOYENNE: for(int i=0; i<arg.nbThreads; i++) pthread_create(&thread[i],NULL,moyenneTableau,(void*)mes[i]);
+		case OCD_MAX: for(int i=0; i<arg.nbThreads; i++) pthread_create(&thread[i],NULL,maxTableau,(void*)mes[i]);
+		case OCD_MIN: for(int i=0; i<arg.nbThreads; i++) pthread_create(&thread[i],NULL,minTableau,(void*)mes[i]);
+	}
 
 
 	// Jointure
@@ -306,7 +319,7 @@ void programmePrincipal (const arg_t arg) {
 	// Libération de la mémoire
 	free(tab);
 	free(thread);
-	malloc(mes);
+	free(mes);
 }
 
 // NE PAS TOUCHER
