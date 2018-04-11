@@ -3,51 +3,27 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "deck.h"
 #include "mes_types.h"
+#include "fonctions_liste.h"
 #include "lire_ecrire.h"
 
 void gere_erreur(int erreur)
 {
 	switch(erreur)
 	{
-		case 1:
-		{
-			fprintf(stderr,"Erreur lors de l'ouverture du fichier\n");
-			exit(0);
-		}
-		case 2:
-		{
-			fprintf(stderr,"Impossible de lire les informations données dans le fichier\n");
-			exit(0);
-		}
-		case 3:
-		{
-			fprintf(stderr,"Imposible de creer une simulation car le fichier ne possede pas d'information(s) sur le(s) joueur(s)\n");
-			exit(0);
-		}
-		case 4:
-		{
-			fprintf(stderr,"Erreur lors de la lecture du fichier\n");
-			exit(0);
-		}
-		case 5:
-		{
-			fprintf(stderr,"Pas assez d'information pour les joueurs\n");
-			exit(0);	
-		}
-		case 6:
-		{
-			fprintf(stderr,"Erreur lors de la fermeuture d'un fichier\n");
-			exit(0);	
-		}
-		case 7:
-		{
-			fprintf(stderr,"Erreur lors de la creation d'un fichier\n");
-			exit(0);
-		}
+		case 1: fprintf(stderr,"Erreur lors de l'ouverture du fichier\n");
+		case 2:	fprintf(stderr,"Impossible de lire les informations données dans le fichier\n");
+		case 3: fprintf(stderr,"Imposible de creer une simulation car le fichier ne possede pas d'information(s) sur le(s) joueur(s)\n");
+		case 4: fprintf(stderr,"Erreur lors de la lecture du fichier\n");
+		case 5:	fprintf(stderr,"Pas assez d'information pour les joueurs\n");
+		case 6: fprintf(stderr,"Erreur lors de la fermeuture d'un fichier\n");
+		case 7: fprintf(stderr,"Erreur lors de la creation d'un fichier\n");
+		case 8: fprintf(stderr,"Erreur lors de l'ecriture d'un fichier\n");
 	}
+	exit(0);
 }
 
 
@@ -179,11 +155,14 @@ void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
 {
 	int fd;
 	ssize_t ret;
-	char nom[100];
-	char c;
+	char nom[100];					// Chaine de caractere stockant le nom des fichiers qu'on cree
+	char entier[10];				// Chaine de caractere stockant les chiffres d'un entier
+	char c;							// Caractere stockant le ';' ou le retour à la ligne
+	INFOJOUEURS tmp;
 	for(int i=0; i<nbJoueurs; i++)
 	{
-		while(infoJoueurs[i]!=NULL && ret!=-1)
+		tmp=infoJoueurs[i];
+		while(tmp!=NULL && ret!=-1)
 		{
 			sprintf(nom,"joueur_n%d.blackjack",i+1);
 			fd=open(nom,O_CREAT|O_WRONLY,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
@@ -192,27 +171,55 @@ void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
 				gere_erreur(7);
 			}
 			c=';';
-			ret=write(fd,&infoJoueurs[i]->cartesJoueur,sizeof(char*));
+
+			ret=write(fd,tmp->cartesJoueur,strlen(tmp->cartesJoueur)*sizeof(*tmp->cartesJoueur));
+
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i]->totalJoueur,sizeof(int));
+
+			sprintf(entier,"%d",tmp->totalJoueur);			// Je stock l'entier dans une chaine de caractere grace à sprintf()
+			ret=write(fd,&entier,strlen(entier)*sizeof(char));
+
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i]->cartesBanque,sizeof(char*));
+
+			ret=write(fd,tmp->cartesBanque,strlen(tmp->cartesBanque)*sizeof(*tmp->cartesBanque));
+			
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i]->totalBanque,sizeof(int));
+
+			sprintf(entier,"%d",tmp->totalBanque);
+			ret=write(fd,&entier,strlen(entier)*sizeof(char));
+
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i]->mise,sizeof(int));
+
+			sprintf(entier,"%d",tmp->mise);
+			ret=write(fd,&entier,strlen(entier)*sizeof(char));
+
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i]->gain,sizeof(int));
+			
+			sprintf(entier,"%d",tmp->gain);
+			ret=write(fd,&entier,strlen(entier)*sizeof(char));
+
 			ret=write(fd,&c,sizeof(char));
-			ret=write(fd,&infoJoueurs[i]->nbJetons,sizeof(int));
+			
+			sprintf(entier,"%d",tmp->nbJetons);
+			ret=write(fd,&entier,strlen(entier)*sizeof(char));
+
 			c='\n';
 			ret=write(fd,&c,sizeof(char));
-			infoJoueurs[i]=infoJoueurs[i]->suiv;
+
+			if(ret==-1)
+			{
+				for(int i=0; i<nbJoueurs; i++) libere_memoire(infoJoueurs[i]);
+				gere_erreur(8);
+			}
+
+			tmp=tmp->suiv;
 		}
 		ret=close(fd);
 		if(ret==-1)
 		{
-			gere_erreur(7);
+			for(int i=0; i<nbJoueurs; i++) libere_memoire(infoJoueurs[i]);
+			gere_erreur(6);
 		}
+		libere_memoire(infoJoueurs[i]);
 	}
 }
