@@ -151,7 +151,7 @@ TABLE lire_fichier(const char *nom)
 	return t;
 }
 
-void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
+void ecrire_fichier(INFOJOUEURS *infoJoueurs, int nbJoueurs)
 {
 	int fd;
 	ssize_t ret;
@@ -168,6 +168,8 @@ void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
 			fd=open(nom,O_CREAT|O_WRONLY,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 			if(fd==-1)
 			{
+				for(int i=0; i<nbJoueurs; i++) libere_memoire(infoJoueurs[i]);
+				free(infoJoueurs);
 				gere_erreur(7);
 			}
 			c=';';
@@ -209,6 +211,7 @@ void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
 			if(ret==-1)
 			{
 				for(int i=0; i<nbJoueurs; i++) libere_memoire(infoJoueurs[i]);
+				free(infoJoueurs);
 				gere_erreur(8);
 			}
 
@@ -218,6 +221,7 @@ void ecrire_fichier(INFOJOUEURS infoJoueurs[], int nbJoueurs)
 		if(ret==-1)
 		{
 			for(int i=0; i<nbJoueurs; i++) libere_memoire(infoJoueurs[i]);
+			free(infoJoueurs);
 			gere_erreur(6);
 		}
 		libere_memoire(infoJoueurs[i]);
