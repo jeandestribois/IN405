@@ -16,8 +16,8 @@ int main(int argc, const char *argv[])
 	}
 	TABLE t=lire_fichier(argv[1]);
 	INFOJOUEURS *info=simuler(t);
-
-	ecrire_fichier(info,1);
+	
+	ecrire_fichier(info,t.nbJoueurs);
 
 	exit(0);
 }

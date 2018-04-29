@@ -1,2 +1,2 @@
 INFOJOUEURS libere_memoire(INFOJOUEURS info);
-INFOJOUEURS ajoute_element_fin(INFOJOUEURS info, char *cartesJoueur, int totalJoueur, char *cartesBanque, int totalBanque, int mise, int gain, int nbJetons);
+INFOJOUEURS ajoute_element_fin(INFOJOUEURS info, INFOJOUEURS tmp);

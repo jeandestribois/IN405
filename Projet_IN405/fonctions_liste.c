@@ -6,31 +6,22 @@
 
 
 
-INFOJOUEURS ajoute_element_fin(INFOJOUEURS info, char *cartesJoueur, int totalJoueur, char *cartesBanque, int totalBanque, int mise, int gain, int nbJetons)
+INFOJOUEURS ajoute_element_fin(INFOJOUEURS info, INFOJOUEURS tmp)        // Lorsqu'on utilise cette fonction, on se trouve déjà à la fin de la liste
 {
-    INFOJOUEURS tmp, info2;
-
-    tmp=malloc(sizeof(struct infojoueurs));
-    tmp->cartesJoueur=cartesJoueur;
-    tmp->totalJoueur=totalJoueur;
-    tmp->cartesBanque=cartesBanque;
-    tmp->totalBanque=totalBanque;
-    tmp->mise=mise;
-    tmp->gain=gain;
-    tmp->nbJetons=nbJetons;
-   	tmp->suiv=NULL;
-
     if(info==NULL)
     {
         return tmp;
     }
-    info2=info;
-    while(info->suiv!=NULL)
+    else
     {
-        info=info->suiv;
+        INFOJOUEURS tmpBis=info;
+        while(info->suiv!=NULL)
+        {
+            info=info->suiv;   
+        }
+        info->suiv=tmp;
+        return tmpBis;
     }
-    info->suiv=tmp;
-    return info2;
 }
 
 

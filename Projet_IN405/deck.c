@@ -222,3 +222,47 @@ void printDrawPile (
 	}
 	printf ("\n");
 }
+
+char getCharFromCardValue(cardvalue_t card)
+{
+	switch(card)
+	{
+		case VJOK: return 'O';
+		case VA: return 'A';
+		case V2: return '2';
+		case V3: return '3';
+		case V4: return '4';
+		case V5: return '5';
+		case V6: return '6';
+		case V7: return '7';
+		case V8: return '8';
+		case V9: return '9';
+		case VX: return 'X';
+		case VJ: return 'J';
+		case VQ: return 'Q';
+		case VK: return 'K';
+		default: return '\0';
+	}
+}
+
+cardvalue_t getCardValueFromChar(char card)
+{
+	switch(card)
+	{
+		case 'A': return VA;
+		case '2': return V2;
+		case '3': return V3;
+		case '4': return V4;
+		case '5': return V5;
+		case '6': return V6;
+		case '7': return V7;
+		case '8': return V8;
+		case '9': return V9;
+		case 'X': return VX;
+		case 'J': return VJ;
+		case 'Q': return VQ;
+		case 'K': return VK;
+		default: return VJOK;
+
+	}
+}

@@ -115,4 +115,10 @@ void printDiscardPile (deck_t * deck);
 // \param	value			Valeur de carte
 void printCard (const int value);
 
+// Fonction rajoutée par nous même pour obtenir le caractère associé à la valeur d'une carte
+char getCharFromCardValue(cardvalue_t card);
+
+// Fonction rajoutée par nous même pour obtenir la valeur d'une carte associé à un caractère
+cardvalue_t getCardValueFromChar(char card);
+
 #endif

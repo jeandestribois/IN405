@@ -12,17 +12,14 @@
 
 void gere_erreur(int erreur)
 {
-	switch(erreur)
-	{
-		case 1: fprintf(stderr,"Erreur lors de l'ouverture du fichier\n");
-		case 2:	fprintf(stderr,"Impossible de lire les informations données dans le fichier\n");
-		case 3: fprintf(stderr,"Imposible de creer une simulation car le fichier ne possede pas d'information(s) sur le(s) joueur(s)\n");
-		case 4: fprintf(stderr,"Erreur lors de la lecture du fichier\n");
-		case 5:	fprintf(stderr,"Pas assez d'information pour les joueurs\n");
-		case 6: fprintf(stderr,"Erreur lors de la fermeuture d'un fichier\n");
-		case 7: fprintf(stderr,"Erreur lors de la creation d'un fichier\n");
-		case 8: fprintf(stderr,"Erreur lors de l'ecriture d'un fichier\n");
-	}
+	if(erreur==1) fprintf(stderr,"Erreur lors de l'ouverture du fichier\n");
+	else if(erreur==2) fprintf(stderr,"Impossible de lire les informations données dans le fichier\n");
+	else if(erreur==3) fprintf(stderr,"Imposible de creer une simulation car le fichier ne possede pas d'information(s) sur le(s) joueur(s)\n");
+	else if(erreur==4) fprintf(stderr,"Erreur lors de la lecture du fichier\n");
+	else if(erreur==5) fprintf(stderr,"Pas assez d'information pour les joueurs\n");
+	else if(erreur==6) fprintf(stderr,"Erreur lors de la fermeuture d'un fichier\n");
+	else if(erreur==7) fprintf(stderr,"Erreur lors de la creation d'un fichier\n");
+	else if(erreur==8) fprintf(stderr,"Erreur lors de l'ecriture d'un fichier\n");
 	exit(0);
 }
 
@@ -81,7 +78,6 @@ TABLE lire_fichier(const char *nom)
 
 
 	t.joueurs=malloc(sizeof(JOUEUR)*t.nbJoueurs);
-	t.decks=malloc(sizeof(deck_t)*t.nbDecks);
 
 	/*
 		Lecture des autres lignes
@@ -91,7 +87,7 @@ TABLE lire_fichier(const char *nom)
 	{
 		t.joueurs[i].nbJetons=0;
 		t.joueurs[i].mise=0;
-		t.joueurs[i].typeMise='c';	// Lorsque rien est indiqué, la mise est de type constant
+		t.joueurs[i].typeMise='\0';	// Lorsque rien est indiqué, la mise est de type constant
 		t.joueurs[i].valStop=0;
 		t.joueurs[i].objJetons=0;
 
@@ -133,7 +129,6 @@ TABLE lire_fichier(const char *nom)
 		if(erreur!=0)
 		{
 			free(t.joueurs);
-			free(t.decks);
 			gere_erreur(erreur);
 		}
 		printf("Joueur %d : nombre de jetons : %d\n",i+1,t.joueurs[i].nbJetons);
@@ -145,7 +140,6 @@ TABLE lire_fichier(const char *nom)
 	if(ret==-1)
 	{
 		free(t.joueurs);
-		free(t.decks);
 		gere_erreur(6);
 	}
 	return t;
@@ -159,19 +153,21 @@ void ecrire_fichier(INFOJOUEURS *infoJoueurs, int nbJoueurs)
 	char entier[10];				// Chaine de caractere stockant les chiffres d'un entier
 	char c;							// Caractere stockant le ';' ou le retour à la ligne
 	INFOJOUEURS tmp;
+	printf("\nDébut ecriture des fichiers\n\n");
 	for(int i=0; i<nbJoueurs; i++)
 	{
-		tmp=infoJoueurs[i];
-		while(tmp!=NULL && ret!=-1)
+		sprintf(nom,"joueur_n%d.blackjack",i+1);
+		fd=open(nom,O_CREAT|O_WRONLY,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+		if(fd==-1)
 		{
-			sprintf(nom,"joueur_n%d.blackjack",i+1);
-			fd=open(nom,O_CREAT|O_WRONLY,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-			if(fd==-1)
-			{
-				for(int i=0; i<nbJoueurs; i++) libere_memoire(infoJoueurs[i]);
-				free(infoJoueurs);
-				gere_erreur(7);
-			}
+			for(int i=0; i<nbJoueurs; i++) libere_memoire(infoJoueurs[i]);
+			free(infoJoueurs);
+			gere_erreur(7);
+		}
+		printf("Ecriture du fichier %d/%d\n",i+1,nbJoueurs);
+		tmp=infoJoueurs[i];
+		while(tmp!=NULL)
+		{
 			c=';';
 
 			ret=write(fd,tmp->cartesJoueur,strlen(tmp->cartesJoueur)*sizeof(*tmp->cartesJoueur));
@@ -226,4 +222,6 @@ void ecrire_fichier(INFOJOUEURS *infoJoueurs, int nbJoueurs)
 		}
 		libere_memoire(infoJoueurs[i]);
 	}
+	free(infoJoueurs);
+	printf("\nFin ecriture des fichiers\n\n");
 }

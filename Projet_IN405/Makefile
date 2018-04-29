@@ -1,4 +1,9 @@
-all: build
+all: clean build test
+
+# Test avec un niveau
+
+test:
+	./blackjack lv1.blackjack
 
 # Edition de lien
 
@@ -33,3 +38,6 @@ clean:
 
 edit:
 	subl Makefile *.c *.h &
+
+resultat:
+	subl joueur_n* &
