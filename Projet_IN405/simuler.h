@@ -1,0 +1,1 @@
+INFOJOUEURS* simuler(TABLE t);
