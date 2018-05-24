@@ -58,7 +58,7 @@ void gagneOuPerd(INFOJOUEURS *tmp, TABLE t, TUBE *tubeVersJoueur, TUBE *tubeVers
 			nbJetons[i]+=tmp[i]->gain;
 			tmp[i]->nbJetons=nbJetons[i];
 			write(tubeVersJoueur[i].tube[1],&aGagner,sizeof(int));				// On lui dit s'il a gagner
-			write(tubeVersJoueur[i].tube[1],&nbJetons[i],sizeof(int));		// On lui dit le nombre de jetons qu'il a
+			write(tubeVersJoueur[i].tube[1],&nbJetons[i],sizeof(int));			// On lui dit le nombre de jetons qu'il a
 		}
 	}
 }
